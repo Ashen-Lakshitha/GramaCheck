@@ -17,26 +17,24 @@ export default function DetailsInt() {
   const [error ,setError] = useState(null);
   const [isLoading ,setIsLoading] = useState(null);
 
-  const url1 = "http://localhost:3001/gramaInt";
+  const url1 = "https://46c49c4b-93ff-48d6-9deb-66d022b806fd-prod.e1-us-east-azure.choreoapis.dev/zazy/integrator/1.0.0/validate?id="+id+"&address="+address;
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const body = JSON.stringify({
-        id: id,
-        address: address,
-        });
-
     setIsLoading(true);
     setError(null);
-    
+    console.log(localStorage.getItem("access-token"))
     fetch(url1, {
-        method: 'POST',
-        headers: {"Content-Type":"application/json"},
-        body:JSON.stringify({id: id})
+        method: 'GET',
+        headers: {
+            "Content-Type":"application/json",
+            "Authorization": "Bearer " + localStorage.getItem("access-token") 
+        },
     }).then(res=>{
         return res.json();
     })
     .then(data=>{
+        console.log(data);
         setIsLoading(false);
         if(!data['success']){
             setError(data['error']);
@@ -118,7 +116,13 @@ export default function DetailsInt() {
                 >
                     Submit
                 </Button>}
-                {isLoading && <CircularProgress color="inherit" />}
+                {isLoading && <Box
+                    sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    }}
+                > <CircularProgress color="inherit" /></Box>}
                 <Grid container>
                     <Grid item xs>
                         <Link href="/user-dashboard" variant="body2">

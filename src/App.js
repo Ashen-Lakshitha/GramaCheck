@@ -7,11 +7,12 @@ import UserHome from './Pages/user-dashboard';
 import Check from './Pages/check';
 import SubmitDetails from './Pages/submit-details';
 import ViewStatus from "./Pages/view-status";
+import UserDashboard from "./Pages/user-dashboard";
 import { ErrorBoundary } from "./error-boundary";
 
 function Content (){
-  const error  = useAuthContext();
-
+  const {state, error} = useAuthContext();
+// console.log(state)
   return (
     <ErrorBoundary error={error}>
       <Router>

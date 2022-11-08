@@ -1,6 +1,8 @@
 import { Hooks, useAuthContext } from "@asgardeo/auth-react";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
+import axios from "axios";
+import qs from 'qs';
 import {
     Typography,
     Container,
@@ -33,6 +35,8 @@ export default function Start() {
         on
     } = useAuthContext();
 
+    const history = useHistory();
+
     const [ derivedAuthenticationState, setDerivedAuthenticationState ] = useState(null);
     const [ hasAuthenticationErrors, setHasAuthenticationErrors ] = useState(false);
     const [ hasLogoutFailureError, setHasLogoutFailureError ] = useState();
@@ -44,52 +48,49 @@ export default function Start() {
     useEffect(() => {
 
         if (!state?.isAuthenticated) {
+            localStorage.clear();
             return;
         }
-        // fetch("https://www.hpb.health.gov.lk/api/get-current-statistical")
-        // .then(response => {
-        //     if(response.ok){
-        //         return response.json();
-        //     }
-        //     throw response;
-        // })
-        // .then(data => {
-        //     console.log(data);
-        // })
-        // .catch(error => {
-        //     console.log("Error");
-        // })
+        
+        getBasicUserInfo().then((basicUserDetails) => {
+            // console.log(basicUserDetails);
+            console.log(state);
+        
+        })
 
-           getBasicUserInfo().then((basicUserDetails) => {
-                console.log(basicUserDetails);
-                console.log(basicUserDetails.username);
-            })
+        getIDToken()
+            .then(idToken=>{
+                // console.log(idToken);
+                
+                var data = qs.stringify({
+                    'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
+                    'subject_token': idToken,
+                    'subject_token_type': 'urn:ietf:params:oauth:token-type:jwt',
+                    'requested_token_type': 'urn:ietf:params:oauth:token-type:jwt' 
+                });
 
-            getIDToken()
-                .then(idToken=>{
-                    console.log(JSON.parse(atob(idToken.split(".")[0])))
+                var config = {
+                    method: 'post',
+                    url: 'https://sts.choreo.dev/oauth2/token',
+                    headers: { 
+                        'Authorization': 'Basic ZHRiSHVOV29ybUFzVHV3M0dDYTFnbldmbURvYTo0eDVVMU5maHo0dV9TWHN2WmFIMkdDb2pVaThh', 
+                        'Content-Type': 'application/x-www-form-urlencoded', 
+                        // 'Cookie': 'apim=1667837971.408.602.295488|dcb1dc1c03c8f17e5aa485d6222013b8'
+                    },
+                    data : data
+                };
+
+                axios(config)
+                    .then(function (response) {
+                        console.log(response.data.access_token);
+                        let token = response.data.access_token;
+                        localStorage.setItem('access-token', token)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });     
                 })
-            
-            getDecodedIDToken()
-                .then(decodedToken=>{
-                    console.log(decodedToken)
-                })
 
-        // (async (): Promise<void> => {
-        //     const basicUserInfo = await getBasicUserInfo();
-        //     const idToken = await getIDToken();
-        //     const decodedIDToken = await getDecodedIDToken();
-
-        //     setName(basicUserInfo.username)
-        //     const derivedState = {
-        //         authenticateResponse: basicUserInfo,
-        //         idToken: idToken.split("."),
-        //         decodedIdTokenHeader: JSON.parse(atob(idToken.split(".")[0])),
-        //         decodedIDTokenPayload: decodedIDToken
-        //     };
-
-        //     setDerivedAuthenticationState(derivedState);
-        // })();
     }, [state.isAuthenticated]);
 
     useEffect(() => {
@@ -124,8 +125,10 @@ export default function Start() {
 
     return (
         <div>
-            {state.isAuthenticated && <div>
-                <h1>Hi user</h1>
+            {state.isAuthenticated && 
+            // history.push("user-dashboard")}
+            <div>
+                <h1>Hi {state.displayName}</h1>
                 <a href="user-dashboard">user</a>
                 </div>
                 }
