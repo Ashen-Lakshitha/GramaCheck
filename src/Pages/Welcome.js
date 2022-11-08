@@ -1,27 +1,14 @@
 import { Hooks, useAuthContext } from "@asgardeo/auth-react";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import {
-    Typography,
-    Container,
-    Box,
-    Button,
-    Paper
-} from "@mui/material";
-import Image from '../images/bg.jpg';
+import { Link } from "react-router-dom";
+import welcome from '../../src/images/welcome.png';
+import welcome2 from '../../src/images/welcome2.png';
+import UserDashboard from "./UserDashboard";
 
-const styles = {
-    paperContainer: {
-        backgroundImage: `url(${Image})`,
-        width:"100%",
-        height: "100vh",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-    }
-};
 
-export default function Start() {
+
+export default function Welcome() {
 
     const {
         state,
@@ -63,6 +50,8 @@ export default function Start() {
            getBasicUserInfo().then((basicUserDetails) => {
                 console.log(basicUserDetails);
                 console.log(basicUserDetails.username);
+                const x = JSON.parse(window.sessionStorage.getItem("session_data-instance_0"));
+                console.log("token got: "+x.access_token);
             })
 
             getIDToken()
@@ -72,7 +61,8 @@ export default function Start() {
             
             getDecodedIDToken()
                 .then(decodedToken=>{
-                    console.log(decodedToken)
+                    console.log("token ");
+                    console.log(decodedToken);
                 })
 
         // (async (): Promise<void> => {
@@ -104,7 +94,6 @@ export default function Start() {
         on(Hooks.SignOut, () => {
             setHasLogoutFailureError(false);
         });
-
         on(Hooks.SignOutFailed, () => {
             if(!errorDescParam) {
                 handleLogin();
@@ -123,43 +112,36 @@ export default function Start() {
     };
 
     return (
+        <div>  
+
+      {state.isAuthenticated && 
         <div>
-            {state.isAuthenticated && <div>
-                <h1>Hi user</h1>
-                <a href="user-dashboard">user</a>
-                </div>
-                }
-            {!state.isAuthenticated &&
-                <Paper style={styles.paperContainer} >
-                    <Container component="main" maxWidth="sm" sx={{paddingTop: 20}}>
-                        <Box
-                            bgcolor = "rgba(255,255,255,0.7)"
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                border: 'none',
-                                padding: 5,
-                                borderRadius: 2,
-                            }}
-                        >
-                            <Typography component="h1" variant="h5" color='#3F51B5'>
-                                <span style= {{fontSize:40,}}>Welcome to Grama Check</span>
-                            </Typography>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 
-                                    ,backgroundColor: '#3F51B5'
-                                }}
-                                onClick={()=>handleLogin()}
-                            >
-                                Log In
-                            </Button>
-                        </Box>
-                    </Container>
-                </Paper>}       
+             <br></br><br></br>
+             <h1>Hey! Let's start</h1>
+             <div>
+                <img src={welcome2} height="300px" width="400px" alt="This is the welcome img"/>
+             </div>            
+            <br></br>
+            <Link to="/user/apply">
+                <button className="submitbtn" style={{'width':'20%'}} > Continue </button>
+            </Link>
         </div>
+      }
+
+
+      {!state.isAuthenticated &&
+      <div>
+        <br></br><br></br>
+        
+          <h1>Welcome to the grama check app</h1>
+          <div>
+            <img src={welcome} height="300px" width="500px" alt="This is the welcome img"/>
+          </div>
+          <br></br>
+ 
+        <button className="submitbtn" style={{'width':'20%'}} onClick={()=>handleLogin()}>Continue</button>
+      </div>
+      }
+    </div>
     );
 }  

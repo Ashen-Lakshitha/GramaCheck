@@ -2,12 +2,19 @@ import React from "react";
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import { AuthProvider, useAuthContext } from "@asgardeo/auth-react";
 import { default as authConfig } from "./config.json";
-import Start from './Pages/start';
-import UserHome from './Pages/user-dashboard';
-import Check from './Pages/check';
-import SubmitDetails from './Pages/submit-details';
-import ViewStatus from "./Pages/view-status";
+import Welcome from './pages/Welcome';
+import UserHome from './pages/user-dashboard';
+import Check from './pages/check';
+import SubmitDetails from './pages/submit-details';
+import ViewStatus from "./pages/view-status";
 import { ErrorBoundary } from "./error-boundary";
+import './App.css';
+import UserDashboard from "./pages/UserDashboard";
+import Status from "./pages/Status";
+import ApplyForm from "./pages/ApplyForm";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+
 
 function Content (){
   const error  = useAuthContext();
@@ -16,11 +23,18 @@ function Content (){
     <ErrorBoundary error={error}>
       <Router>
         <Switch>
-          <Route exact path="/" component={Start} />
-          <Route path="/user-dashboard" component={UserHome} />
+
+          {/* paths for Welcome, UserDashboard, ApplyForm are working*/}
+
+          <Route exact path="/" component={Welcome} />
+          <Route path="/user/dashboard" component={UserDashboard} />
+          <Route path="/user/apply" component={ApplyForm} />
+
+
+          {/* these paths are not relevant */}
           <Route path="/check" component={Check} />
-          <Route path="/submit-details" component={SubmitDetails} />
-          <Route path="/view-status" component={ViewStatus} />
+          <Route path="/user/status" component={Status}/>
+
         </Switch>
       </Router>
     </ErrorBoundary>
@@ -29,9 +43,14 @@ function Content (){
 
 function App () {
   return(
-  <AuthProvider config={authConfig}>
-    <Content></Content>
-    </AuthProvider>
+
+    <div className="App">
+
+      <AuthProvider config={authConfig}>
+        <Content></Content>
+      </AuthProvider>
+
+    </div>
   )
 };
 
