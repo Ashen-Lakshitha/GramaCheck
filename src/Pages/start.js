@@ -11,12 +11,22 @@ import {
     Paper
 } from "@mui/material";
 import Image from '../images/bg.jpg';
+import welcome from '../images/welcome.png';
+import Header from "../components/header";
 
 const styles = {
     paperContainer: {
         backgroundImage: `url(${Image})`,
         width:"100%",
         height: "100vh",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+    },
+    paperContainer2: {
+        backgroundImage: `url(${welcome})`,
+        width:"100%",
+        height: window.innerHeight,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -28,10 +38,8 @@ export default function Start() {
     const {
         state,
         signIn,
-        signOut,
-        getBasicUserInfo,
         getIDToken,
-        getDecodedIDToken,
+        getBasicUserInfo,
         on
     } = useAuthContext();
 
@@ -51,16 +59,11 @@ export default function Start() {
             localStorage.clear();
             return;
         }
-        
-        getBasicUserInfo().then((basicUserDetails) => {
-            // console.log(basicUserDetails);
-            console.log(state);
-        
-        })
 
+        getBasicUserInfo().then(res=>console.log(res))
+        console.log(state)
         getIDToken()
             .then(idToken=>{
-                // console.log(idToken);
                 
                 var data = qs.stringify({
                     'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
@@ -82,7 +85,6 @@ export default function Start() {
 
                 axios(config)
                     .then(function (response) {
-                        console.log(response.data.access_token);
                         let token = response.data.access_token;
                         localStorage.setItem('access-token', token)
                     })
@@ -119,19 +121,64 @@ export default function Start() {
             .catch(() => setHasAuthenticationErrors(true));
     };
 
-    const handleLogout = () => {
-        signOut();
-    };
-
     return (
         <div>
-            {state.isAuthenticated && 
-            // history.push("user-dashboard")}
-            <div>
-                <h1>Hi {state.displayName}</h1>
-                <a href="user-dashboard">user</a>
-                </div>
-                }
+            {state.isAuthenticated && <div>
+                <Paper style={styles.paperContainer2} >
+                    <Header/>
+                    <Container component="main" maxWidth="sm">
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                border: 'none',
+                                justifyContent: 'center',
+                                padding: 5,
+                                borderRadius: 2,
+                            }}
+                        >
+                            <Typography component="h1" variant="h5" color='#3F51B5'>
+                                <span style= {{fontSize:40,}}>GramaCheck</span>
+                            </Typography>
+                        </Box>
+                        <Box
+                            bgcolor = "lightblue"
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                border: 'none',
+                                padding: 5,
+                                borderRadius: 2,
+                            }}
+                        >
+                            <h1>Hi {state.displayName}</h1>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 
+                                    ,backgroundColor: '#3F51B5'
+                                }}
+                                onClick={()=>history.push("/submit-details")}
+                            >
+                                Apply for Grama certificate
+                            </Button>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 
+                                    ,backgroundColor: '#3F51B5'
+                                }}
+                                onClick={()=>history.push("/view-status")}
+                            >
+                                View Status
+                            </Button>
+                        </Box>
+                    </Container>
+                </Paper>
+            </div>}
             {!state.isAuthenticated &&
                 <Paper style={styles.paperContainer} >
                     <Container component="main" maxWidth="sm" sx={{paddingTop: 20}}>

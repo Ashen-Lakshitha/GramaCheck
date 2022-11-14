@@ -3,23 +3,19 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import { AuthProvider, useAuthContext } from "@asgardeo/auth-react";
 import { default as authConfig } from "./config.json";
 import Start from './Pages/start';
-import UserHome from './Pages/user-dashboard';
-import Check from './Pages/check';
 import SubmitDetails from './Pages/submit-details';
 import ViewStatus from "./Pages/view-status";
-import UserDashboard from "./Pages/user-dashboard";
 import { ErrorBoundary } from "./error-boundary";
 
 function Content (){
-  const {state, error} = useAuthContext();
-// console.log(state)
+  const {error} = useAuthContext();
   return (
     <ErrorBoundary error={error}>
       <Router>
         <Switch>
           <Route exact path="/" component={Start} />
-          <Route path="/user-dashboard" component={UserHome} />
-          <Route path="/check" component={Check} />
+          {/* <Route path="/user-dashboard" component={UserHome} />
+          <Route path="/check" component={Check} /> */}
           <Route path="/submit-details" component={SubmitDetails} />
           <Route path="/view-status" component={ViewStatus} />
         </Switch>
