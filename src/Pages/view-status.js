@@ -1,55 +1,80 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
 import {
-    Container,
     Typography,
     Box,
-    Grid,
-    Link
+    Card
 } from "@mui/material";
+import Certificate from '../components/certificate';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
-export default function ViewStatus() {
+export default function ViewStatus({person, data}) {
 
     return (
-        <div>
-            <Container component="main" maxWidth="sm">
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        border: 'none',
-                        justifyContent: 'center',
-                        padding: 5,
-                        borderRadius: 2,
-                    }}
-                >
-                    <Typography component="h1" variant="h5" color='#3F51B5'>
-                        <span style= {{fontSize:40,}}>GramaCheck</span>
-                    </Typography>
+        <Card variant="outlined">
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    border: 'none',
+                    justifyContent: 'center',
+                    borderRadius: 2,
+                }}
+            >
+                <Typography component="h5" variant="h5">
+                    Your Grama certificate is
+                </Typography>
+            </Box>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'left',
+                    border: 'none',
+                    padding: 5,
+                    borderRadius: 2,
+                }}
+            >
+                <Content flag = {data.isIdValid} text="ID Check" msg = {data.idMsg}/>
+                <Content flag = {data.isAddressValid} text="Address Check" msg = {data.addressMsg}/>
+                <Content flag = {data.isPoliceValid} text="Police Check" msg = {data.policeMsg}/>
+                {/* {data.isIdValid ? <p> <CheckCircleOutlineIcon color="success"/> ID check</p> 
+                        : <p> <ErrorOutlineIcon color="error"/> ID check<li>{data.idMsg}</li></p>}
+
+                {data.isAddressValid ? <div> <CheckCircleOutlineIcon color="success"/> Address check</div> 
+                                        : <p> <ErrorOutlineIcon color="error"/> Address check<li>{data.addressMsg}</li></p>}
+
+                {data.isPoliceValid ? <p> <CheckCircleOutlineIcon color="success"/> Your police result is correct</p> 
+                                        : <p> <ErrorOutlineIcon color="error"/> Your police result has an issue</p>} */}
+                
+                {data.success 
+                    ? <Certificate person = {person} response = {data}/>
+                    : <Typography color="red">Try again with correct information</Typography>}   
                 </Box>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        border: 'none',
-                        padding: 5,
-                        borderRadius: 2,
-                    }}
-                >
-                    <Typography component="h1" variant="h5" color=''>
-                        <span style= {{fontSize:30,}}>Your Status</span>
-                    </Typography>
-                    <Typography component="h1" variant="h5" color=''>
-                        <span style= {{fontSize:20,}}>Pending...</span>
-                    </Typography>
-                    <Grid>
-                        <Link href="/user-dashboard" variant="body2">
-                            Go Back
-                        </Link>
-                    </Grid>
-                </Box>
-            </Container>
-        </div>
+            </Card>
     )
+}
+
+function Content({flag, text, msg}){
+    return (
+        <Box 
+            sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                marginBottom: 2
+            }}
+        > 
+            {flag?<><CheckCircleOutlineIcon color="success"/> <Typography>{text}</Typography></> 
+                        : <> <ErrorOutlineIcon color="error"/> <Box 
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}
+                        > 
+                            <Typography>{text}</Typography>
+                            {text === "Police check" ?msg.split('#').map(item=><Typography variant='body2'>{item}</Typography>) :<Typography variant='body2'>{msg}</Typography>}
+                        </Box></>}
+        </Box>
+        
+    );
 }
