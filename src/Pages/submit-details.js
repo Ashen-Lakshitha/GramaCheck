@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useAuthContext } from "@asgardeo/auth-react";
 import {
     Container,
@@ -23,6 +24,8 @@ export default function DetailsInt() {
     const [error ,setError] = useState(null);
     const [isLoading ,setIsLoading] = useState(null);
 
+    const history = useHistory();
+
     const person = {
         "id" : id,
         "address" : address
@@ -35,10 +38,10 @@ export default function DetailsInt() {
 
 
     useEffect(()=>{
-        console.log(state);
+        // console.log(state);
         if (!state?.isAuthenticated) {
             localStorage.clear();
-            return;
+            history.push("/");
         }
 
         getBasicUserInfo().then(response=>{
@@ -54,7 +57,7 @@ export default function DetailsInt() {
         setData(null)
         setIsLoading(true);
         setError(null);
-        console.log(localStorage.getItem("access-token"))
+        // console.log(localStorage.getItem("access-token"))
         fetch(url, {
             method: 'GET',
             headers: {
@@ -66,6 +69,7 @@ export default function DetailsInt() {
         })
         .then(data=>{
             console.log(data);
+            // localStorage.setItem("data", data)
             setIsLoading(false);
             setData(data)
         })
@@ -157,7 +161,7 @@ export default function DetailsInt() {
                         > <CircularProgress color="inherit" /></Box>}
                         <Grid container>
                             <Grid item xs>
-                                <Link href="/user-dashboard" variant="body2">
+                                <Link href="/" variant="body2">
                                     Go Back
                                 </Link>
                             </Grid>

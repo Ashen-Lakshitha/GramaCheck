@@ -164,7 +164,7 @@ export default function Start() {
                             >
                                 Apply for Grama certificate
                             </Button>
-                            <Button
+                            {/* <Button
                                 type="submit"
                                 fullWidth
                                 variant="contained"
@@ -174,7 +174,7 @@ export default function Start() {
                                 onClick={()=>history.push("/view-status")}
                             >
                                 View Status
-                            </Button>
+                            </Button> */}
                         </Box>
                     </Container>
                 </Paper>

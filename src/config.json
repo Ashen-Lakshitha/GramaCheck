@@ -1,7 +1,7 @@
 {
     "clientID": "2Pt1hWeA8VMaG1F7vDRi28_5uLIa",
     "baseUrl": "https://api.asgardeo.io/t/gramacheck99",
-    "signInRedirectURL": "https://grama-check-ovu6hwjfm-ashen-lakshitha.vercel.app",
-    "signOutRedirectURL": "https://grama-check-ovu6hwjfm-ashen-lakshitha.vercel.app",
+    "signInRedirectURL": "http://localhost:3000",
+    "signOutRedirectURL": "http://localhost:3000",
     "scope": ["openid","profile"]
 }
